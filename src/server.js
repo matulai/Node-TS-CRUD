@@ -1,9 +1,9 @@
-const http = require("http");
-const {
+import http from "http";
+import {
   getUsers,
   getUserById,
   createNewUser,
-} = require("./controllers/userController");
+} from "./controllers/userController";
 
 const server = http.createServer((req, res) => {
   if (req.url === "/api/users" && req.method === "GET") {

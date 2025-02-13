@@ -1,5 +1,5 @@
-const { UserService } = require("../service/userService");
-const { streamToData } = require("../utils/functions");
+import { UserService } from "../service/userService";
+import { streamToData } from "../utils/functions";
 const userService = new UserService();
 
 // @GET /api/users
@@ -39,4 +39,4 @@ async function createNewUser(req, res) {
   }
 }
 
-module.exports = { getUsers, getUserById, createNewUser };
+export { getUsers, getUserById, createNewUser };

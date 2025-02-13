@@ -1,14 +1,8 @@
-// const fs = require('fs');
-// const path = require('path');
-let users = require("../data/users.json");
+import users from "../data/users.json";
 
-const { writeDataToFile } = require("../utils/functions");
+import { writeDataToFile } from "../utils/functions";
 
 class UserService {
-  // constructor() {
-  //   this.filePath = path.join(__dirname, '../data/users.json');
-  // }
-
   findAll() {
     return new Promise(resolve => {
       resolve(users);
@@ -50,4 +44,4 @@ class UserService {
   }
 }
 
-module.exports = { UserService };
+export { UserService };

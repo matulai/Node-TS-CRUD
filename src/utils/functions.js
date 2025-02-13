@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 
 function writeDataToFile(fileName, data) {
   fs.writeFileSync(fileName, JSON.stringify(data), "utf-8", error => {
@@ -19,7 +19,4 @@ async function streamToData(readableStream) {
     });
 }
 
-module.exports = {
-  writeDataToFile,
-  streamToData,
-};
+export { writeDataToFile, streamToData };
