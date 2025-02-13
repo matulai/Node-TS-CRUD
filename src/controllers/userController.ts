@@ -1,21 +1,27 @@
-import { UserService } from "../service/userService";
-import { streamToData } from "../utils/functions";
+import { IncomingMessage, ServerResponse } from "http";
+import { UserService } from "../service/userService.js";
+import { streamToData } from "../utils/functions.js";
 const userService = new UserService();
 
 // @GET /api/users
-async function getUsers(req, res) {
+async function getUsers(_req: IncomingMessage, res: ServerResponse) {
   try {
     const users = await userService.findAll();
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(users));
   } catch (error) {
-    console.log(error);
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Internal Server Error" }));
   }
 }
 
 // @GET /api/user/:id
-async function getUserById(req, res, id) {
+async function getUserById(
+  _req: IncomingMessage,
+  res: ServerResponse,
+  id: number
+) {
   try {
     const user = await userService.findUserById(id);
 
@@ -27,9 +33,10 @@ async function getUserById(req, res, id) {
   }
 }
 
-async function createNewUser(req, res) {
+async function createNewUser(req: IncomingMessage, res: ServerResponse) {
   try {
-    const newUser = await userService.createUser(streamToData(req));
+    const reqData = await streamToData(req);
+    const newUser = await userService.createUser(reqData);
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(newUser));

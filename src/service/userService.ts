@@ -1,6 +1,7 @@
-import users from "../data/users.json";
+import users from "../data/users.json" assert { type: "json" };
+import type { User } from "../types/types.js";
 
-import { writeDataToFile } from "../utils/functions";
+import { writeDataToFile } from "../utils/functions.js";
 
 class UserService {
   findAll() {
@@ -9,7 +10,7 @@ class UserService {
     });
   }
 
-  findUserById(id) {
+  findUserById(id: number) {
     return new Promise((resolve, reject) => {
       const user = users.find(user => user.id == id);
       if (user) {
@@ -20,10 +21,10 @@ class UserService {
     });
   }
 
-  createUser(user) {
+  createUser(user: User) {
     return new Promise((resolve, reject) => {
       if (user) {
-        const newUser = { id: this.#generateId(), ...user };
+        const newUser = { ...user, id: user.id ?? this.#generateId() };
         users.push(newUser);
         writeDataToFile("data/users.json", users);
         resolve(newUser);
@@ -34,9 +35,7 @@ class UserService {
   }
 
   cleanBD() {
-    const newUsers = users.slice(0, 100);
-    users = newUsers;
-    writeDataToFile("data/users.json", users);
+    writeDataToFile("data/users.json", users.slice(0, 100));
   }
 
   #generateId() {
