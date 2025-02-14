@@ -1,10 +1,11 @@
 import { UserService } from "../../src/service/userService.js";
+import type { User } from "../../src/types/types.js";
 
 // toStrictEqual: Pa objetoc y verifica que TODO sea exactamente igual.
 // toEqual: Pa objetos pero ignora claves con valor undefined, etc.
 // toBe: Pa valores primitivos, en objetos verifica que la referencias sean iguales.
 
-let userService;
+let userService: UserService;
 
 beforeEach(() => {
   userService = new UserService();
@@ -15,7 +16,7 @@ afterEach(() => {
 });
 
 test("Obtener la cantidad de todos los usuarios", () => {
-  return userService.findAll().then(data => {
+  return userService.findAll().then((data: User[]) => {
     expect(data.length).toBe(100);
   });
 });
