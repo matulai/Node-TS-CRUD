@@ -6,6 +6,10 @@ function writeDataToFile(fileName: string, data: any) {
   fs.writeFileSync(fileName, JSON.stringify(data), "utf-8");
 }
 
+function readFile(fileName: string): string {
+  return fs.readFileSync(fileName, "utf-8");
+}
+
 async function streamToData(stream: Readable): Promise<User> {
   return new Promise((resolve, reject) => {
     let body = "";
@@ -23,4 +27,4 @@ async function streamToData(stream: Readable): Promise<User> {
   });
 }
 
-export { writeDataToFile, streamToData };
+export { writeDataToFile, streamToData, readFile };

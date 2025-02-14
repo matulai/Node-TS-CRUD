@@ -1,18 +1,20 @@
-import users from "../data/users.json" assert { type: "json" };
+import { writeDataToFile, readFile } from "../utils/functions.js";
 import type { User } from "../types/types.js";
 
-import { writeDataToFile } from "../utils/functions.js";
+const users = JSON.parse(readFile("src/data/users.json"));
+
+const typedUsers: User[] = users as User[];
 
 class UserService {
-  findAll() {
+  findAll(): Promise<User[]> {
     return new Promise(resolve => {
-      resolve(users);
+      resolve(typedUsers);
     });
   }
 
-  findUserById(id: number) {
+  findUserById(id: number): Promise<User> {
     return new Promise((resolve, reject) => {
-      const user = users.find(user => user.id == id);
+      const user = typedUsers.find(user => user.id == id);
       if (user) {
         resolve(user);
       } else {
@@ -21,12 +23,12 @@ class UserService {
     });
   }
 
-  createUser(user: User) {
+  createUser(user: User): Promise<User> {
     return new Promise((resolve, reject) => {
       if (user) {
         const newUser = { ...user, id: user.id ?? this.#generateId() };
-        users.push(newUser);
-        writeDataToFile("data/users.json", users);
+        typedUsers.push(newUser);
+        writeDataToFile("src/data/users.json", typedUsers);
         resolve(newUser);
       } else {
         reject("You cannot do that");
@@ -35,11 +37,11 @@ class UserService {
   }
 
   cleanBD() {
-    writeDataToFile("data/users.json", users.slice(0, 100));
+    writeDataToFile("src/data/users.json", typedUsers.slice(0, 100));
   }
 
   #generateId() {
-    return users.length + 1;
+    return typedUsers.length + 1;
   }
 }
 
