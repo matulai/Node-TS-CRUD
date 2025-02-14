@@ -10,7 +10,7 @@ function readFile(fileName: string): string {
   return fs.readFileSync(fileName, "utf-8");
 }
 
-async function streamToData(stream: Readable): Promise<User> {
+function streamToData(stream: Readable): Promise<User> {
   return new Promise((resolve, reject) => {
     let body = "";
 

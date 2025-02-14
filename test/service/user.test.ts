@@ -5,49 +5,89 @@ import type { User } from "../../src/types/types.js";
 // toEqual: Pa objetos pero ignora claves con valor undefined, etc.
 // toBe: Pa valores primitivos, en objetos verifica que la referencias sean iguales.
 
-let userService: UserService;
-
-beforeEach(() => {
-  userService = new UserService();
-});
+let userService: UserService = new UserService();
 
 afterEach(() => {
   userService.cleanBD();
 });
 
-test("Obtener la cantidad de todos los usuarios", () => {
-  return userService.findAll().then((data: User[]) => {
-    expect(data.length).toBe(100);
+test("Obtener la cantidad de todos los usuarios", async () => {
+  await userService.createUser({
+    first_name: "Leo",
+    last_name: "Pablo",
+    email: "leo@pablo.com",
+    gender: "Female",
   });
+
+  const data: User[] = await userService.findAll();
+  expect(data.length).toBe(1);
 });
 
-test("Obtener un usuario por id", () => {
-  return userService.findUserById(1).then(data => {
-    expect(data).toStrictEqual({
-      id: 1,
-      first_name: "Elita",
-      last_name: "Epple",
-      email: "eepple0@mayoclinic.com",
+test("Obtener un usuario por id", async () => {
+  const user: User = await userService.createUser({
+    first_name: "Leo",
+    last_name: "Pablo",
+    email: "leo@pablo.com",
+    gender: "Female",
+  });
+
+  const data: User = await userService.findUserById(user.id!);
+  expect(data.id).toBe(user.id);
+});
+
+test("Obtener un usuario por id inexistente", async () => {
+  await expect(userService.findUserById(100)).rejects.toBe("User not found");
+});
+
+test("Se crea un usuario", async () => {
+  const user: User = await userService.createUser({
+    first_name: "Leo",
+    last_name: "Pablo",
+    email: "leo@pablo.com",
+    gender: "Female",
+  });
+
+  expect(user.id).toBeDefined();
+});
+
+test("Se actualiza un usuario existente", async () => {
+  const user: User = await userService.createUser({
+    first_name: "Leo",
+    last_name: "Pablo",
+    email: "leo@pablo.com",
+    gender: "Female",
+  });
+
+  const updatedUser: User = await userService.updateUser(user.id!, {
+    first_name: "Lalo",
+    last_name: "Pedro",
+    email: "lalo@pedro.com",
+    gender: "Male",
+  });
+
+  expect(updatedUser.id).toBe(user.id);
+});
+
+test("Se acualiza un usuario inexistente", async () => {
+  await expect(
+    userService.updateUser(100, {
+      first_name: "Leo",
+      last_name: "Pablo",
+      email: "leo@pablo.com",
       gender: "Female",
-    });
-  });
+    })
+  ).rejects.toBe("User not found");
 });
 
-test("Se crea un usuario", () => {
-  return userService
-    .createUser({
-      first_name: "Matias",
-      last_name: "Matias",
-      email: "matias@matias.com",
-      gender: "Male",
-    })
-    .then(user => {
-      expect(user).toStrictEqual({
-        id: expect.any(Number),
-        first_name: "Matias",
-        last_name: "Matias",
-        email: "matias@matias.com",
-        gender: "Male",
-      });
-    });
+test("Se elimina un usuario", async () => {
+  const user: User = await userService.createUser({
+    first_name: "Leo",
+    last_name: "Pablo",
+    email: "leo@pablo.com",
+    gender: "Female",
+  });
+
+  const data: string = await userService.deleteUserById(user.id!);
+
+  expect(data).toBe("User deleted");
 });

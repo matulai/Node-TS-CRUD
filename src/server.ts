@@ -3,6 +3,8 @@ import {
   getUsers,
   getUserById,
   createNewUser,
+  updateUserById,
+  deleteUserById,
 } from "./controllers/userController.js";
 
 const server: http.Server = http.createServer(
@@ -21,6 +23,18 @@ const server: http.Server = http.createServer(
         getUserById(req, res, id);
       } else if (req.url === "/api/user" && req.method === "POST") {
         createNewUser(req, res);
+      } else if (
+        req.url.match(/^\/api\/user\/([0-9]+)$/) &&
+        req.method === "PUT"
+      ) {
+        const id: number = Number(req.url.split("/")[3]);
+        updateUserById(req, res, id);
+      } else if (
+        req.url.match(/^\/api\/user\/([0-9]+)$/) &&
+        req.method === "DELETE"
+      ) {
+        const id: number = Number(req.url.split("/")[3]);
+        deleteUserById(req, res, id);
       } else {
         res.writeHead(404, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Content not avaible" }));
