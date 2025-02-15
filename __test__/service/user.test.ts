@@ -1,5 +1,5 @@
-import { UserService } from "../../src/service/userService.js";
-import type { User } from "../../src/types/types.js";
+import UserService from "../../src/service/userService";
+import type { User } from "../../src/types/types";
 
 // toStrictEqual: Pa objetoc y verifica que TODO sea exactamente igual.
 // toEqual: Pa objetos pero ignora claves con valor undefined, etc.

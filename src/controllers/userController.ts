@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { UserService } from "../service/userService.js";
-import { streamToData } from "../utils/functions.js";
-import type { User } from "../types/types.js";
+import UserService from "@/service/userService";
+import { streamToData } from "@/utils/functions";
+import type { User } from "@/types/types";
 
 const userService: UserService = new UserService();
 

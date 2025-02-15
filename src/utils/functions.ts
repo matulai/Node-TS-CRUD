@@ -1,6 +1,6 @@
 import fs from "fs";
 import { Readable } from "stream";
-import type { User } from "../types/types.js";
+import type { User } from "@/types/types";
 
 function writeDataToFile(fileName: string, data: any) {
   fs.writeFileSync(fileName, JSON.stringify(data), "utf-8");

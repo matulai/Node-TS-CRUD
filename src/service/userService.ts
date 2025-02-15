@@ -1,5 +1,5 @@
-import { writeDataToFile, readFile } from "../utils/functions.js";
-import type { User } from "../types/types.js";
+import { writeDataToFile, readFile } from "@/utils/functions";
+import type { User } from "@/types/types";
 
 // No es necesario el fs para escribir en el archivo json
 // con lo siguiente lo tratas como un array cualquier y va.
@@ -71,4 +71,4 @@ class UserService {
   }
 }
 
-export { UserService };
+export default UserService;
