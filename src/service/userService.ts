@@ -1,6 +1,8 @@
 import { writeDataToFile, readFile } from "../utils/functions.js";
 import type { User } from "../types/types.js";
 
+// No es necesario el fs para escribir en el archivo json
+// con lo siguiente lo tratas como un array cualquier y va.
 const users = JSON.parse(readFile("src/data/users.json"));
 
 const typedUsers: User[] = users as User[];
@@ -8,62 +10,56 @@ const typedUsers: User[] = users as User[];
 class UserService {
   #avaiblesIds: number[] = [];
 
-  findAll(): Promise<User[]> {
-    return new Promise(resolve => {
-      resolve(typedUsers);
-    });
+  findAll(): User[] {
+    return typedUsers;
   }
 
-  findUserById(id: number): Promise<User> {
-    return new Promise((resolve, reject) => {
-      const user: User | undefined = typedUsers.find(user => user.id == id);
-      if (user) {
-        resolve(user);
-      } else {
-        reject("User not found");
-      }
-    });
+  findUserById(id: number): User {
+    const user: User | undefined = typedUsers.find(user => user.id == id);
+    if (user) {
+      return user;
+    } else {
+      throw new Error("User not found");
+    }
   }
 
-  createUser(user: User): Promise<User> {
-    return new Promise((resolve, reject) => {
-      if (user) {
-        const newUser: User = { id: this.#generateId(), ...user };
-        typedUsers.push(newUser);
-        writeDataToFile("src/data/users.json", typedUsers);
-        resolve(newUser);
-      } else {
-        reject("You cannot do that");
-      }
-    });
+  createUser(user: User): User {
+    if (user) {
+      const newUser: User = { id: this.#generateId(), ...user };
+      typedUsers.push(newUser);
+      // writeDataToFile("src/data/users.json", typedUsers);
+      return newUser;
+    } else {
+      throw new Error("You cannot do that");
+    }
   }
 
-  updateUser(id: number, toUpdateUser: User): Promise<User> {
-    return new Promise((resolve, reject) => {
-      const user: User | undefined = typedUsers.find(user => user.id == id);
-      if (user && user.id && toUpdateUser) {
-        const updatedUser: User = { id: user.id, ...toUpdateUser };
-        const updatedTypedUsers = typedUsers.filter(user => user.id === id);
-        writeDataToFile("src/data/users.json", updatedTypedUsers);
-        resolve(updatedUser);
-      } else {
-        reject("User not found");
-      }
-    });
+  updateUser(id: number, toUpdateUser: User): User {
+    const userIndex: number = typedUsers.findIndex(user => user.id === id);
+
+    if (userIndex !== -1 && toUpdateUser) {
+      const updatedUser: User = {
+        id: typedUsers[userIndex]!.id,
+        ...toUpdateUser,
+      };
+      typedUsers[userIndex] = updatedUser;
+      // writeDataToFile("src/data/users.json", typedUsers);
+      return updatedUser;
+    } else {
+      throw new Error("User not found");
+    }
   }
 
-  deleteUserById(id: number): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const user: User | undefined = typedUsers.find(user => user.id == id);
-      if (user) {
-        const updatedTypedUsers = typedUsers.filter(user => user.id === id);
-        this.#avaiblesIds.push(id);
-        writeDataToFile("src/data/users.json", updatedTypedUsers);
-        resolve("User deleted");
-      } else {
-        reject("User not found");
-      }
-    });
+  deleteUserById(id: number): string {
+    const userIndex: number = typedUsers.findIndex(user => user.id == id);
+    if (userIndex !== -1) {
+      typedUsers.splice(userIndex, 1);
+      this.#avaiblesIds.push(id);
+      // writeDataToFile("src/data/users.json", updatedTypedUsers);
+      return "User deleted";
+    } else {
+      throw new Error("User not found");
+    }
   }
 
   cleanBD(): void {

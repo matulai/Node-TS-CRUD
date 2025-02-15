@@ -6,12 +6,9 @@ import type { User } from "../types/types.js";
 const userService: UserService = new UserService();
 
 // @GET /api/users
-async function getUsers(
-  _req: IncomingMessage,
-  res: ServerResponse
-): Promise<void> {
+function getUsers(_req: IncomingMessage, res: ServerResponse): void {
   try {
-    const users: User[] = await userService.findAll();
+    const users: User[] = userService.findAll();
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(users));
@@ -22,13 +19,13 @@ async function getUsers(
 }
 
 // @GET /api/user/:id
-async function getUserById(
+function getUserById(
   _req: IncomingMessage,
   res: ServerResponse,
   id: number
-): Promise<void> {
+): void {
   try {
-    const user: User = await userService.findUserById(id);
+    const user: User = userService.findUserById(id);
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(user));
@@ -45,7 +42,7 @@ async function createNewUser(
 ): Promise<void> {
   try {
     const reqData: User = await streamToData(req);
-    const newUser: User = await userService.createUser(reqData);
+    const newUser: User = userService.createUser(reqData);
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(newUser));
@@ -63,8 +60,7 @@ async function updateUserById(
 ): Promise<void> {
   try {
     const toUpdateUser: User = await streamToData(req);
-
-    const updatedUser: User = await userService.updateUser(id, toUpdateUser);
+    const updatedUser: User = userService.updateUser(id, toUpdateUser);
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(updatedUser));
@@ -75,13 +71,13 @@ async function updateUserById(
 }
 
 // DELETE /api/user/:id
-async function deleteUserById(
+function deleteUserById(
   _req: IncomingMessage,
   res: ServerResponse,
   id: number
-): Promise<void> {
+): void {
   try {
-    const message: string = await userService.deleteUserById(id);
+    const message: string = userService.deleteUserById(id);
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: message }));

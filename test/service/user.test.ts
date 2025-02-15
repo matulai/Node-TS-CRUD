@@ -11,36 +11,36 @@ afterEach(() => {
   userService.cleanBD();
 });
 
-test("Obtener la cantidad de todos los usuarios", async () => {
-  await userService.createUser({
+test("Obtener la cantidad de todos los usuarios", () => {
+  userService.createUser({
     first_name: "Leo",
     last_name: "Pablo",
     email: "leo@pablo.com",
     gender: "Female",
   });
 
-  const data: User[] = await userService.findAll();
+  const data: User[] = userService.findAll();
   expect(data.length).toBe(1);
 });
 
-test("Obtener un usuario por id", async () => {
-  const user: User = await userService.createUser({
+test("Obtener un usuario por id", () => {
+  const user: User = userService.createUser({
     first_name: "Leo",
     last_name: "Pablo",
     email: "leo@pablo.com",
     gender: "Female",
   });
 
-  const data: User = await userService.findUserById(user.id!);
+  const data: User = userService.findUserById(user.id!);
   expect(data.id).toBe(user.id);
 });
 
-test("Obtener un usuario por id inexistente", async () => {
-  await expect(userService.findUserById(100)).rejects.toBe("User not found");
+test("Obtener un usuario por id inexistente", () => {
+  expect(() => userService.findUserById(100)).toThrow("User not found");
 });
 
-test("Se crea un usuario", async () => {
-  const user: User = await userService.createUser({
+test("Se crea un usuario", () => {
+  const user: User = userService.createUser({
     first_name: "Leo",
     last_name: "Pablo",
     email: "leo@pablo.com",
@@ -50,15 +50,15 @@ test("Se crea un usuario", async () => {
   expect(user.id).toBeDefined();
 });
 
-test("Se actualiza un usuario existente", async () => {
-  const user: User = await userService.createUser({
+test("Se actualiza un usuario existente", () => {
+  const user: User = userService.createUser({
     first_name: "Leo",
     last_name: "Pablo",
     email: "leo@pablo.com",
     gender: "Female",
   });
 
-  const updatedUser: User = await userService.updateUser(user.id!, {
+  const updatedUser: User = userService.updateUser(user.id!, {
     first_name: "Lalo",
     last_name: "Pedro",
     email: "lalo@pedro.com",
@@ -66,28 +66,29 @@ test("Se actualiza un usuario existente", async () => {
   });
 
   expect(updatedUser.id).toBe(user.id);
+  expect(updatedUser.first_name).toBe("Lalo");
 });
 
-test("Se acualiza un usuario inexistente", async () => {
-  await expect(
+test("Se acualiza un usuario inexistente", () => {
+  expect(() =>
     userService.updateUser(100, {
       first_name: "Leo",
       last_name: "Pablo",
       email: "leo@pablo.com",
       gender: "Female",
     })
-  ).rejects.toBe("User not found");
+  ).toThrow("User not found");
 });
 
-test("Se elimina un usuario", async () => {
-  const user: User = await userService.createUser({
+test("Se elimina un usuario", () => {
+  const user: User = userService.createUser({
     first_name: "Leo",
     last_name: "Pablo",
     email: "leo@pablo.com",
     gender: "Female",
   });
 
-  const data: string = await userService.deleteUserById(user.id!);
+  const data: string = userService.deleteUserById(user.id!);
 
   expect(data).toBe("User deleted");
 });
