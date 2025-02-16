@@ -5,7 +5,7 @@ import {
   createNewUser,
   updateUserById,
   deleteUserById,
-} from "./controllers/userController.js";
+} from "@/controllers/userController";
 
 const server: http.Server = http.createServer(
   (req: http.IncomingMessage, res: http.ServerResponse) => {

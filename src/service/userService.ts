@@ -7,7 +7,7 @@ const users = JSON.parse(readFile("src/data/users.json"));
 
 const typedUsers: User[] = users as User[];
 
-class UserService {
+export class UserService {
   #avaiblesIds: number[] = [];
 
   findAll(): User[] {
@@ -70,5 +70,3 @@ class UserService {
     return this.#avaiblesIds.shift() ?? typedUsers.length + 1;
   }
 }
-
-export default UserService;

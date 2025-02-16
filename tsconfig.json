@@ -20,8 +20,8 @@
     "noImplicitOverride": true,
 
     /* Transpiling options if the transpiling is with tsc */
-    "module": "ESNext",
-    "moduleResolution": "node",
+    "module": "CommonJS",
+    // "moduleResolution": "node",
     "outDir": "dist",
 
     /* 
@@ -39,8 +39,7 @@
     /* If the code runs in the DOM */
     // "lib": ["es2022", "dom", "dom.iterable"]
 
-    /* Give alias to a path */
-    "baseUrl": "./",
+    /* Give alias to a path, from the config file if baseUrl not seted */
     "paths": {
       "@/*": ["./src/*"]
     }

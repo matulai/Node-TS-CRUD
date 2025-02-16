@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http";
-import UserService from "@/service/userService";
+import { UserService } from "@/service/userService";
 import { streamToData } from "@/utils/functions";
 import type { User } from "@/types/types";
 
