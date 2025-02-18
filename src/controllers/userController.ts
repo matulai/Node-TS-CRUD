@@ -3,88 +3,110 @@ import { UserService } from "@/service/userService";
 import { streamToData } from "@/utils/functions";
 import type { User } from "@/types/types";
 
-const userService: UserService = new UserService();
+export class UserController {
+  private userService: UserService;
 
-// @GET /api/users
-function getUsers(_req: IncomingMessage, res: ServerResponse): void {
-  try {
-    const users: User[] = userService.findAll();
+  constructor() {
+    this.userService = new UserService();
+  }
 
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(users));
-  } catch (error) {
-    res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Internal Server Error" }));
+  // @GET /api/users
+  async getUsers(_req: IncomingMessage, res: ServerResponse): Promise<void> {
+    try {
+      const users: User[] = await this.userService.findAll();
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(users));
+    } catch (error) {
+      this.handleError(res, error, 500);
+    }
+  }
+
+  // @GET /api/user/:id
+  async getUserById(
+    _req: IncomingMessage,
+    res: ServerResponse,
+    id: string
+  ): Promise<void> {
+    try {
+      const user: User = await this.userService.findUserById(id);
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(user));
+    } catch (error) {
+      this.handleError(res, error, 404);
+    }
+  }
+
+  // @POST /api/user/:id body: User
+  async createNewUser(
+    req: IncomingMessage,
+    res: ServerResponse
+  ): Promise<void> {
+    try {
+      const reqData: User = await streamToData(req);
+
+      if (!reqData || !reqData.email) {
+        throw new Error("Invalid user data");
+      }
+
+      const newUser: User = await this.userService.createUser(reqData);
+
+      res.writeHead(201, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(newUser));
+    } catch (error) {
+      this.handleError(res, error, 400);
+    }
+  }
+
+  // @PUT /api/user/:id body: User
+  async updateUserById(
+    req: IncomingMessage,
+    res: ServerResponse
+  ): Promise<void> {
+    try {
+      const toUpdateUser: User = await streamToData(req);
+
+      if (!toUpdateUser || !toUpdateUser.id) {
+        throw new Error("Invalid user data");
+      }
+
+      const updatedUser: User = await this.userService.updateUser(toUpdateUser);
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(updatedUser));
+    } catch (error) {
+      this.handleError(res, error, 404);
+    }
+  }
+
+  // DELETE /api/user/:id
+  async deleteUserById(
+    _req: IncomingMessage,
+    res: ServerResponse,
+    id: string
+  ): Promise<void> {
+    try {
+      const message: string = await this.userService.deleteUserById(id);
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: message }));
+    } catch (error) {
+      this.handleError(res, error, 404);
+    }
+  }
+
+  // Método genérico para manejar errores
+  private handleError(
+    res: ServerResponse,
+    error: unknown,
+    statusCode: number
+  ): void {
+    res.writeHead(statusCode, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        message: error instanceof Error ? error.message : "Unexpected error",
+      })
+    );
   }
 }
-
-// @GET /api/user/:id
-function getUserById(
-  _req: IncomingMessage,
-  res: ServerResponse,
-  id: number
-): void {
-  try {
-    const user: User = userService.findUserById(id);
-
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(user));
-  } catch (error) {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: error }));
-  }
-}
-
-// @POST /api/user/:id body: User
-async function createNewUser(
-  req: IncomingMessage,
-  res: ServerResponse
-): Promise<void> {
-  try {
-    const reqData: User = await streamToData(req);
-    const newUser: User = userService.createUser(reqData);
-
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(newUser));
-  } catch (error) {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: error }));
-  }
-}
-
-// @PUT /api/user/:id body: User
-async function updateUserById(
-  req: IncomingMessage,
-  res: ServerResponse,
-  id: number
-): Promise<void> {
-  try {
-    const toUpdateUser: User = await streamToData(req);
-    const updatedUser: User = userService.updateUser(id, toUpdateUser);
-
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(updatedUser));
-  } catch (error) {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: error }));
-  }
-}
-
-// DELETE /api/user/:id
-function deleteUserById(
-  _req: IncomingMessage,
-  res: ServerResponse,
-  id: number
-): void {
-  try {
-    const message: string = userService.deleteUserById(id);
-
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: message }));
-  } catch (error) {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: error }));
-  }
-}
-
-export { getUsers, getUserById, createNewUser, updateUserById, deleteUserById };
