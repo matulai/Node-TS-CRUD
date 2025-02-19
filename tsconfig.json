@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     /* Base */
     "esModuleInterop": true,
@@ -40,10 +41,11 @@
     // "lib": ["es2022", "dom", "dom.iterable"]
 
     /* Give alias to a path, from the config file if baseUrl not seted */
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "__test__/**/*.ts"]
+  "exclude": ["node_modules", "__test__/**/*.ts", "dist"]
 }
