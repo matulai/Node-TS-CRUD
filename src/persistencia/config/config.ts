@@ -1,7 +1,10 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 export const config = {
-  user: "postgres",
-  password: "admin",
-  host: "localhost",
-  database: "Node-Vanilla",
-  port: 5432,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  port: Number(process.env.DB_PORT),
 };
