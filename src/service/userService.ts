@@ -31,4 +31,8 @@ export class UserService {
   async cleanBD(): Promise<string> {
     return this.userDAO.deleteAllUsers();
   }
+
+  async closePool(): Promise<void> {
+    this.userDAO.closePool();
+  }
 }

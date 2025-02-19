@@ -7,6 +7,7 @@
     "clean": "rm -rf dist",
     "dev": "nodemon --ext ts --exec \"npm run build && node dist/main.js\"",
     "test": "jest",
+    "test:pa": "jest --detectOpenHandles",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
   },
   "keywords": [],

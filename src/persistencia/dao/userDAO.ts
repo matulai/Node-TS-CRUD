@@ -63,7 +63,7 @@ export class UserDAO {
       ];
       const updatedUser: User = (await client.query(query, values)).rows[0];
 
-      if (!updatedUser) throw new Error("something went wrong");
+      if (!updatedUser) throw new Error("user not found");
       return updatedUser;
     } finally {
       client.release();
@@ -111,5 +111,9 @@ export class UserDAO {
     } finally {
       client.release();
     }
+  }
+
+  async closePool(): Promise<void> {
+    await this.pool.end();
   }
 }
